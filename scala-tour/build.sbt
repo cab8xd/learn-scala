@@ -20,6 +20,13 @@ lazy val root = project
     libraryDependencies ++= Seq(
     ("org.apache.spark" %% "spark-sql" % "3.2.0" % "provided").cross(CrossVersion.for3Use2_13)
     ),
+    libraryDependencies ++= Seq(
+    ("org.apache.spark" %% "spark-core" % "3.2.0" % "provided").cross(CrossVersion.for3Use2_13)
+    )
+
+
+    //fork / run := true,
     // include the 'provided' Spark dependency on the classpath for <code>sbt run
-    Compile / run := Defaults.runTask(Compile / fullClasspath, Compile / run / mainClass, Compile / run / runner).evaluated 
+   // Compile / run := Defaults.runTask(Compile / fullClasspath, Compile / run / mainClass, Compile / run / runner).evaluated 
   )
+  

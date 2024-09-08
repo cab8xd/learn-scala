@@ -5,6 +5,7 @@
  Each method can exemplify Scala basic syntax and semantics.
  The examples include values, variables, blocks, functions, and methods.
 */
+import org.apache.spark.sql.SparkSession
 
 class HelloScala() {
 

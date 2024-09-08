@@ -1,5 +1,6 @@
 import java.awt.Point
 import org.apache.spark.sql.DataFrame
+import org.apache.spark.sql.SparkSession
 
 @main def scala_tour(): Unit =
   println("Hello, Scala Tour!")
