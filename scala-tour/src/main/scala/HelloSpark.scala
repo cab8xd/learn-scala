@@ -8,11 +8,15 @@
     With Scala, you can use Spark to process large datasets.
  */
 import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.{SparkSession, DataFrame, Row}
+import org.apache.spark.sql.types._
 import javax.xml.transform.Source
 import java.io.File
 import java.io._
 
 class HelloSpark extends HelloScala {
+
+    
 
     // Constants to manage sample data.
     val resources_file_path = "src/main/resources/"
@@ -23,15 +27,33 @@ class HelloSpark extends HelloScala {
         println("Let's override the hello_world method in the HelloSpark class.")
         println("Hello, Spark! This is the HelloSpark class that extends the HelloScala class.")
 
+        // Create basic Spark Session.
         val spark = SparkSession.builder
-        .appName("HelloWorld")
-        .master(sys.env.getOrElse("SPARK_MASTER_URL", "local[*]"))
-        .getOrCreate()           // 1
-        import spark.implicits._   // 2
+            .appName("HelloSpark")
+            .master("local")
+            .getOrCreate()
+        print("Session created")
+        import spark.implicits._
 
-        val df = List("hello", "world").toDF  // 3
-        df.show()
+        // Define schema for DataFrame
+        val schema = StructType(Seq(
+        StructField("First", StringType, nullable = false),
+        StructField("Second", IntegerType, nullable = false),
+        StructField("Third", StringType, nullable = false)
+        ))
 
+        // Sample data: List of Lists
+        val data = List(
+        List("Hello", "Data", "Frame"),
+        )
+
+        // Convert List of Lists to RDD of Rows
+        val rowsRDD = spark.sparkContext.parallelize(data).map(Row.fromSeq)
+
+        // Create DataFrame
+        val df: DataFrame = spark.createDataFrame(rowsRDD, schema)
+       
+        df.show() // The show() method is a part of the Apache Spark DataFrame API and provides basic visualization.
         spark.stop()     
     }
 
