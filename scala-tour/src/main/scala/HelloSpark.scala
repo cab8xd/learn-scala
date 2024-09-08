@@ -7,6 +7,10 @@
     Spark provides an interface for programming entire clusters with implicit data parallelism and fault tolerance.
     With Scala, you can use Spark to process large datasets.
  */
+
+ // ! The class is bugged due to dependency issues. 
+ // ! The code should be correct but the dependencies are not working properly.
+ // https://onecompiler.com/scala/3y9a9k988
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.{SparkSession, DataFrame, Row}
 import org.apache.spark.sql.types._
@@ -15,9 +19,6 @@ import java.io.File
 import java.io._
 
 class HelloSpark extends HelloScala {
-
-    
-
     // Constants to manage sample data.
     val resources_file_path = "src/main/resources/"
     val sample_csv_file_path = resources_file_path + "sample.csv"
@@ -38,7 +39,7 @@ class HelloSpark extends HelloScala {
         // Define schema for DataFrame
         val schema = StructType(Seq(
         StructField("First", StringType, nullable = false),
-        StructField("Second", IntegerType, nullable = false),
+        StructField("Second", StringType, nullable = false),
         StructField("Third", StringType, nullable = false)
         ))
 
@@ -93,18 +94,19 @@ class HelloSpark extends HelloScala {
 
         // Write the file to the src/main/resources directory.
         val writer = new PrintWriter(new File(sample_csv_file_path))
-        writer.write("id,name,age,city\n")
-        writer.write("1,Alice,25,New York\n")
-        writer.write("2,Bob,30,Los Angeles\n")
-        writer.write("3,Charlie,35,Chicago\n")
-        writer.write("4,David,40,Houston\n")
-        writer.write("5,Eve,45,Phoenix\n")
-        
+        // Make a list of rows
+        val rows = List(
+            "id,name,age,city",
+            "1,Alice,25,New York",
+            "2,Bob,30,Los Angeles",
+            "3,Charlie,35,Chicago",
+            "4,David,40,Houston",
+            "5,Eve,45,Phoenix"
+        )
+        writer.write(rows.mkString("\n"))
         writer.close()
 
         println("The sample CSV file has been created.")
-
-       
     }
 
     def delete_file(file_path: String): Unit = {
@@ -127,9 +129,6 @@ class HelloSpark extends HelloScala {
             Read a CSV file into a Spark DataFrame.
             The CSV file will be used in the Spark examples.
          */
-        // Create a Spark dataframe.
-        // Read the CSV file into a DataFrame.
-        // Create a Spark session.
         val spark = SparkSession
         .builder
         .appName("HelloSpark")

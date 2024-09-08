@@ -1,12 +1,10 @@
-// TODO: Improve comments to explain the code. 
-// ? What is the best practice for comments in Scala--To describe methods, classes, and variables?
 /*
  The HelloScala class comprises of methods. 
  Each method can exemplify Scala basic syntax and semantics.
  The examples include values, variables, blocks, functions, and methods.
 */
-import org.apache.spark.sql.SparkSession
 
+// ? What is the best practice for comments in Scala--To describe methods, classes, and variables?
 class HelloScala() {
 
   def hello_world(): Unit = {
