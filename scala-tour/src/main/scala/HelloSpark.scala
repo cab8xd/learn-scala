@@ -8,17 +8,18 @@
     With Scala, you can use Spark to process large datasets.
  */
 
- // ! The class is bugged due to dependency issues. 
- // ! The code should be correct but the dependencies are not working properly.
- // https://onecompiler.com/scala/3y9a9k988
+ // Spark imports
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.{SparkSession, DataFrame, Row}
 import org.apache.spark.sql.types._
+import org.apache.spark.sql.functions._
+
+// Java imports
 import javax.xml.transform.Source
 import java.io.File
 import java.io._
 
-class HelloSpark extends HelloScala {
+class HelloSpark(val spark : SparkSession) extends HelloScala {
     // Constants to manage sample data.
     val resources_file_path = "src/main/resources/"
     val sample_csv_file_path = resources_file_path + "sample.csv"
@@ -27,14 +28,6 @@ class HelloSpark extends HelloScala {
     override def hello_world(): Unit = {
         println("Let's override the hello_world method in the HelloSpark class.")
         println("Hello, Spark! This is the HelloSpark class that extends the HelloScala class.")
-
-        // Create basic Spark Session.
-        val spark = SparkSession.builder
-            .appName("HelloSpark")
-            .master("local")
-            .getOrCreate()
-        print("Session created")
-        import spark.implicits._
 
         // Define schema for DataFrame
         val schema = StructType(Seq(
@@ -54,8 +47,7 @@ class HelloSpark extends HelloScala {
         // Create DataFrame
         val df: DataFrame = spark.createDataFrame(rowsRDD, schema)
        
-        df.show() // The show() method is a part of the Apache Spark DataFrame API and provides basic visualization.
-        spark.stop()     
+        df.show() // The show() method is a part of the Apache Spark DataFrame API and provides basic visualization. 
     }
 
     // Methods to manage sample data.
@@ -82,7 +74,7 @@ class HelloSpark extends HelloScala {
         val file = new File(sample_csv_file_path)
         if (file.exists) {
             println("The sample CSV file already exists.")
-            println("Do you want to delete the file? (yes/no)")
+            println("Do you want to regenerate the file? (yes/no)")
             val response = scala.io.StdIn.readLine()
             if (response == "yes") {
                 delete_file(sample_csv_file_path)
@@ -123,30 +115,73 @@ class HelloSpark extends HelloScala {
         }
     }
 
-    // Methods to create Spark DataFrames.
-    def read_spark_df(): Unit = {
+    // Rewrite read_spark_df to return a DataFrame.
+    def read_spark_df(): DataFrame = {
         /* 
             Read a CSV file into a Spark DataFrame.
             The CSV file will be used in the Spark examples.
          */
-        val spark = SparkSession
-        .builder
-        .appName("HelloSpark")
-        .config("spark.master", "local")
-        .getOrCreate()
 
         val df = spark.read
             .option("header", "true")
             .option("inferSchema", "true")
             .csv(sample_csv_file_path)
 
-        // Show the DataFrame.
-        df.show()   
+        // Return the DataFrame.
+        df
     }
 
+    // Methods to transform and manipulate the DataFrame.
+    def filter_df_if_equals(df: DataFrame, column: String="Age", value: String="30"): DataFrame = {
+        /* 
+            Filter a DataFrame based on a column value.
+            @param df: the DataFrame to filter.
+            @param column: the column to filter on.
+            @param value: the value to filter for.
+            @return: the filtered DataFrame.
+         */
 
+        val filtered_df = df.filter(df(column) === value)
+        filtered_df
+    }
 
+    def sort_df_by_column(df: DataFrame, column: String): DataFrame = {
+        /* 
+            Sort a DataFrame by a column.
+            @param df: the DataFrame to sort.
+            @param column: the column to sort by.
+            @return: the sorted DataFrame.
+         */
 
+        val sorted_df = df.sort(column)
+        sorted_df
+    }
+
+    def aggregate_df_avg(df: DataFrame, column: String, group_by : String): DataFrame = {
+        /* 
+            Aggregate a DataFrame.
+            @param df: the DataFrame to aggregate.
+            @param column: the column to aggregate on.
+            @param function: the aggregation function.
+            @return: the aggregated DataFrame.
+         */
+
+        val avg_age_df = df.groupBy(group_by).agg(avg(column))
+        avg_age_df
+    }
+
+    def join_df(df1: DataFrame, df2: DataFrame, column: String): DataFrame = {
+        /* 
+            Join two DataFrames.
+            @param df1: the first DataFrame.
+            @param df2: the second DataFrame.
+            @param column: the column to join on.
+            @return: the joined DataFrame.
+         */
+
+        val joined_df = df1.join(df2, column)
+        joined_df
+    }
         
 
 

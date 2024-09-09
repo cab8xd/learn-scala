@@ -31,24 +31,76 @@ import org.apache.spark.sql.SparkSession
     helloScala.hello_maps()
   say_hello
 
+  val spark = SparkSession.builder
+        .appName("HelloSpark")
+        .master("local")
+        .getOrCreate()
+  import spark.implicits._
+  print("Spark session created.")
+
   // Create an instance of the HelloSpark class.
   // The class is in the same package as this Main class.
-  val helloSpark = new HelloSpark()
+  val helloSpark = new HelloSpark(spark)
   def say_hello_spark : Unit = 
     /* 
       Calls the methods in the HelloSpark class.
-      The HelloSpark class extends the HelloScala class.
+      The HelloSpark class extends the HelloScala class and exemplifies Apache Spark use cases.
+      @param: None
+      @return: None
      */
-    helloSpark.hello_world()
+      // Call the hello_world method in the HelloSpark class.
+      // The hello_world method is overridden in the HelloSpark class.
+      helloSpark.hello_world()
 
-    // Set up the sample data.
-    // ! helloSpark.create_sample_csv()
+      // Set up sample data.
+      helloSpark.create_sample_csv()
 
-    // Read the sample data into a Spark DataFrame.
-    // The filepath is defined as a constant in the HelloSpark class to keep things simple.
-    // ! helloSpark.read_spark_df()
+      // Read the sample data into a Spark DataFrame.
+      // The filepath is defined as a constant in the HelloSpark class to keep things simple.
+      var df = helloSpark.read_spark_df()
+      df.show()
 
-  say_hello_spark
+      // Assert that the DataFrame is not empty.
+      assert(df.count() > 0, "Unexpected behavior - The DataFrame is empty.")
+
+      // Transformations and Manipulations
+      // * Filter the DataFrame to include only 1 row via the default parameters.
+      // Note that, to have some variety, the method has default parameters.
+      var filtered_df = helloSpark.filter_df_if_equals(df)
+
+      // Assert the filtered DataFrame has one row.
+      assert(filtered_df.count() == 1, "The DataFrame should have one row.")
+      filtered_df.show()
+
+      // * Sort the DataFrame by a column.
+      var sorted_df = helloSpark.sort_df_by_column(df, "Name")
+
+      // Assert the first row of the sorted DataFrame.
+      val first_row = sorted_df.first()
+      assert(first_row(1) == "Alice", "The first row should have the name 'Alice'.")
+
+      sorted_df.show()
+
+      // * Aggregate the DataFrame.
+      val avg_age_df = helloSpark.aggregate_df_avg(df, "city", "name")
+      // This group by is a bit contrived; it's just to show the method.
+
+
+  try {
+    // Call the hello_spark method in the HelloSpark class.
+    say_hello_spark
+  } catch {
+    case e: Exception => println(s"An exception occurred: ${e.getMessage}")
+  }
+  finally {
+    // Stop the Spark session.
+    spark.stop()
+    println("Spark session stopped.")
+  }
+
+
+
+
 
 
 
