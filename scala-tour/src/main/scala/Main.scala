@@ -89,7 +89,12 @@ import org.apache.log4j.Logger
       val avg_age_df = helloSpark.aggregate_df_avg(df, "city", "name")
       // This group by is a bit contrived; it's just to show the syntax.
 
-      // * 
+      // * Join two DataFrames.
+      // Create a second DataFrame.
+      val df2 = helloSpark.read_spark_df()
+      val joined_df = helloSpark.join_df(df, df2, "Name")
+      joined_df.show()
+
 
   try {
     // Call the hello_spark method in the HelloSpark class.
