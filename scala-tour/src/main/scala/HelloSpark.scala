@@ -116,7 +116,7 @@ class HelloSpark(val spark : SparkSession) extends HelloScala {
     }
 
     // Rewrite read_spark_df to return a DataFrame.
-    def read_spark_df(): DataFrame = {
+    def read_spark_df(filepath : String = sample_csv_file_path): DataFrame = {
         /* 
             Read a CSV file into a Spark DataFrame.
             The CSV file will be used in the Spark examples.
@@ -183,9 +183,5 @@ class HelloSpark(val spark : SparkSession) extends HelloScala {
         joined_df
     }
         
-
-
-
-
   
 }
