@@ -95,6 +95,10 @@ import org.apache.log4j.Logger
       val joined_df = helloSpark.join_df(df, df2, "Name")
       joined_df.show()
 
+      // Map df to a new DataFrame.
+      val doubledAges = helloSpark.map_df(df)
+      doubledAges.show()
+
 
   try {
     // Call the hello_spark method in the HelloSpark class.

@@ -13,13 +13,14 @@ import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.{SparkSession, DataFrame, Row}
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.functions._
-
 // Java imports
 import javax.xml.transform.Source
 import java.io.File
 import java.io._
 
 class HelloSpark(val spark : SparkSession) extends HelloScala {
+    import spark.implicits._
+
     // Constants to manage sample data.
     val resources_file_path = "src/main/resources/"
     val sample_csv_file_path = resources_file_path + "sample.csv"
@@ -183,7 +184,21 @@ class HelloSpark(val spark : SparkSession) extends HelloScala {
         joined_df
     }
 
-    // TODO: Add more methods to show high order functions.
+    def map_df(df: DataFrame): DataFrame = {
+        /* 
+            Map a DataFrame.
+            @param df: the DataFrame to map.
+            @return: the mapped DataFrame.
+         */
         
+        val doubledAges = df.select("age").as[Int].map(age => age * 2)
+        doubledAges
+
+        // Convert to DataFrame
+        val doubledAgesDF = doubledAges.toDF("doubled_age")
+
+        // Return the DataFrame.
+        doubledAgesDF
+    }
   
 }
