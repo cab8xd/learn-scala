@@ -1,9 +1,13 @@
 import java.awt.Point
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.SparkSession
+import org.apache.log4j.Logger
 
 @main def scala_tour(): Unit =
-  println("Hello, Scala Tour!")
+  // Example of using the Apache log4j library.
+  val logger = Logger.getLogger(getClass.getName)
+  logger.info("Hello, Scala Tour!")
+
 
   // Create an instance of the HelloScala class.
   // The class is in the same package as this Main class.
@@ -83,8 +87,9 @@ import org.apache.spark.sql.SparkSession
 
       // * Aggregate the DataFrame.
       val avg_age_df = helloSpark.aggregate_df_avg(df, "city", "name")
-      // This group by is a bit contrived; it's just to show the method.
+      // This group by is a bit contrived; it's just to show the syntax.
 
+      // * 
 
   try {
     // Call the hello_spark method in the HelloSpark class.
